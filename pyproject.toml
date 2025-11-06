@@ -1,0 +1,9 @@
+[project]
+name = "smart_info_agent_langgraph"
+version = "1.0.0"
+description = "A simple LangGraph-based weather agent that answers real-time weather queries."
+authors = [{name = "Shreya Sharma"}]
+dependencies = ["langgraph", "langchain-core", "pydantic", "requests"]
+
+[tool.setuptools]
+packages = ["app"]
