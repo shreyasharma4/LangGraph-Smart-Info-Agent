@@ -1,30 +1,31 @@
 from datetime import datetime
 
-# Simple in-memory data store
+# Shared in-memory store
 memory = {
     "weather": {},
     "crypto": {}
 }
 
-def save_weather(city: str, temp: str, desc: str):
-    """Save weather data to memory with timestamp."""
-    memory["weather"][city.lower()] = {
-        "temp": temp,
-        "desc": desc,
-        "timestamp": datetime.now().isoformat()
+
+def save_to_memory(category: str, key: str, data):
+    """Save data into in-memory cache"""
+    if category not in memory:
+        memory[category] = {}
+
+    memory[category][key.lower()] = {
+        "data": data,
+        "timestamp": datetime.now()
     }
 
-def get_weather_from_memory(city: str):
-    """Return cached weather if available."""
-    return memory["weather"].get(city.lower())
 
-def save_crypto(symbol: str, price: float):
-    """Save crypto data to memory with timestamp."""
-    memory["crypto"][symbol.upper()] = {
-        "price": price,
-        "timestamp": datetime.now().isoformat()
-    }
+def get_from_memory(category: str, key: str, max_age_seconds: int):
+    """Retrieve cached data if not too old"""
+    key = key.lower()
+    if category not in memory or key not in memory[category]:
+        return None
 
-def get_crypto_from_memory(symbol: str):
-    """Return cached crypto if available."""
-    return memory["crypto"].get(symbol.upper())
+    cached = memory[category][key]
+    age = (datetime.now() - cached["timestamp"]).seconds
+    if age < max_age_seconds:
+        return cached["data"]
+    return None
